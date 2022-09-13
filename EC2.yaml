@@ -13,11 +13,11 @@ Parameters:
         AllowedValues:
             - Staging
             - Dev
-    # KeyName:
-    #     Type: AWS::EC2::KeyPair::KeyName
+    KeyName:
+        Type: AWS::EC2::KeyPair::KeyName
     ImageIdParameter:
         Type: String
-        Default: ami-0c2ab3b8efb09f272
+        Default: ami-0d70546e43a941d70
 
 
 Resources:
@@ -39,20 +39,18 @@ Resources:
                 Ref: ImageIdParameter
             InstanceType:
                 Ref: InstanceTypeParameter
-            # KeyName: 
-            #     Ref: KeyName
+            KeyName: 
+                Ref: KeyName
             SecurityGroups: 
                 - Ref: InstanceSecurityGroup
             UserData:
                 Fn::Base64: |
                     #!/bin/bash
-                    yum update -y
-                    yum install -y httpd.x86_64
-                    systemctl start httpd.service
-                    systemctl enable httpd.service
-                    echo ?Hello World from $(hostname -f)? > /var/html/index.html
-                # Fn::Base64: |
-                #     #!/bin/bash
-                #     yum update -y
-                #     curl -sL https://rpm.nodesource.com/setup_lts.x | bash -
-                #     yum install nodejs -y
+                    sudo apt-get update
+                    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+                    nvm install 16.13.2
+                    sudo apt-get install git
+                    sudo apt install ruby-full
